@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ro.andreea.bolonyi.todolist.fragments.MainPageFragment">
+
+    <TextView
+        android:id="@+id/appTitle"
+        android:layout_width="213dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="659dp"
+        android:background="#F9F0F7"
+        android:text="@string/to_do_list"
+        android:textAlignment="center"
+        android:textColor="#9F007C"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tasksList"
+        android:layout_width="412dp"
+        android:layout_height="404dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="53dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:scrollbars="vertical"
+        android:verticalScrollbarPosition="defaultPosition"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName"
+        tools:listitem="@layout/task_view" />
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="68dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="15dp"
+        android:backgroundTint="#F9F0F7"
+        android:text="@string/add"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#9F007C"
+        android:textSize="12sp"
+        app:iconTint="#9F007C"
+        app:layout_constraintEnd_toStartOf="@+id/updateButton"
+        app:layout_constraintHorizontal_bias="0.769"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appTitle" />
+
+    <Button
+        android:id="@+id/updateButton"
+        android:layout_width="78dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="36dp"
+        android:backgroundTint="#F9F0F7"
+        android:text="@string/update"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="#9F007C"
+        android:textSize="12sp"
+        app:iconTint="#9F007C"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appTitle" />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="150dp"
+        android:backgroundTint="#F9F0F7"
+        android:text="@string/delete"
+        android:textAllCaps="false"
+        android:textColor="#9F007C"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.857"
+        app:layout_constraintStart_toEndOf="@+id/updateButton"
+        app:layout_constraintTop_toBottomOf="@+id/appTitle" />
+
+    <Button
+        android:id="@+id/exportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="47dp"
+        android:backgroundTint="#F9F0F7"
+        android:text="@string/export"
+        android:textColor="#9F007C"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/addButton"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/editTextTextPersonName"
+        android:layout_width="151dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="45dp"
+        android:backgroundTint="#F9F0F7"
+        android:ems="10"
+        android:text="@string/title"
+        android:textColor="#9F007C"
+        app:layout_constraintBottom_toTopOf="@+id/tasksList"
+        app:layout_constraintEnd_toStartOf="@+id/editTextTextPersonName2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addButton"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/editTextTextPersonName2"
+        android:layout_width="110dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="28dp"
+        android:backgroundTint="#F9F0F7"
+        android:ems="10"
+        android:text="@string/deadline"
+        android:textColor="#9F007C"
+        app:layout_constraintBottom_toTopOf="@+id/tasksList"
+        app:layout_constraintEnd_toStartOf="@+id/editTextTextPersonName3"
+        app:layout_constraintStart_toEndOf="@+id/editTextTextPersonName" />
+
+    <TextView
+        android:id="@+id/editTextTextPersonName3"
+        android:layout_width="105dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="28dp"
+        android:backgroundTint="#F9F0F7"
+        android:ems="10"
+        android:text="@string/created"
+        android:textColor="#9F007C"
+        app:layout_constraintBottom_toTopOf="@+id/tasksList"
+        app:layout_constraintEnd_toStartOf="@+id/editTextTextPersonName4"
+        app:layout_constraintStart_toEndOf="@+id/editTextTextPersonName2" />
+
+    <TextView
+        android:id="@+id/editTextTextPersonName4"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="28dp"
+        android:backgroundTint="#F9F0F7"
+        android:ems="10"
+        android:text="@string/pr"
+        android:textColor="#9F007C"
+        app:layout_constraintBottom_toTopOf="@+id/tasksList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextTextPersonName3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

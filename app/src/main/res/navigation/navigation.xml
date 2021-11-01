@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation.xml"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="ro.andreea.bolonyi.todolist.fragments.LoginFragment"
+        android:label="LoginActivity"
+        tools:layout="@layout/login_fragment">
+        <action
+            android:id="@+id/action_loginActivity_to_mainPageActivity"
+            app:destination="@id/mainPageFragment">
+<!--            <argument-->
+<!--                android:name="gitHubUsernameForCurrentUser"-->
+<!--                app:argType="string"-->
+<!--                android:defaultValue="" />-->
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/mainPageFragment"
+        android:name="ro.andreea.bolonyi.todolist.fragments.MainPageFragment"
+        android:label="MainPageActivity"
+        tools:layout="@layout/main_page">
+<!--        <argument-->
+<!--            android:name="gitHubUsernameForCurrentUser"-->
+<!--            app:argType="string"-->
+<!--            android:defaultValue="" />-->
+        <action
+            android:id="@+id/action_mainPageFragment_to_taskDetailsFragment"
+            app:destination="@id/taskDetailsFragment" />
+        <action
+            android:id="@+id/action_mainPageFragment_to_taskDetailsDeleteFragment"
+            app:destination="@id/taskDetailsDeleteFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/taskDetailsFragment"
+        android:name="ro.andreea.bolonyi.todolist.fragments.TaskDetailsAddUpdateFragment"
+        android:label="TaskDetailsFragment" />
+
+    <fragment
+        android:id="@+id/taskDetailsDeleteFragment"
+        android:name="ro.andreea.bolonyi.todolist.fragments.TaskDetailsDeleteFragment"
+        android:label="TaskDetailsDeleteFragment" />
+</navigation>
