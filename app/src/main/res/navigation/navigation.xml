@@ -13,10 +13,6 @@
         <action
             android:id="@+id/action_loginActivity_to_mainPageActivity"
             app:destination="@id/mainPageFragment">
-<!--            <argument-->
-<!--                android:name="gitHubUsernameForCurrentUser"-->
-<!--                app:argType="string"-->
-<!--                android:defaultValue="" />-->
         </action>
     </fragment>
 
@@ -25,10 +21,6 @@
         android:name="ro.andreea.bolonyi.todolist.fragments.MainPageFragment"
         android:label="MainPageActivity"
         tools:layout="@layout/main_page">
-<!--        <argument-->
-<!--            android:name="gitHubUsernameForCurrentUser"-->
-<!--            app:argType="string"-->
-<!--            android:defaultValue="" />-->
         <action
             android:id="@+id/action_mainPageFragment_to_taskDetailsFragment"
             app:destination="@id/taskDetailsFragment" />

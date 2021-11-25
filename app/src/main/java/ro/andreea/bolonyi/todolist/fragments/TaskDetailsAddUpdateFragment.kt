@@ -82,6 +82,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
     }
 
     private fun parseUsersToString(users: List<User>): String {
+        Log.d("tasksFragment", "parse users to string")
         var text = ""
 
         for(user in users) {
@@ -160,7 +161,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
             Toast.makeText(context, "Invalid priority. It should be a number", Toast.LENGTH_LONG)
                 .show()
         } catch (e: java.lang.Exception) {
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show()
+            Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
         }
 
         if (task != null) {
@@ -169,10 +170,8 @@ class TaskDetailsAddUpdateFragment : Fragment() {
                 taskViewModel.add(task)
             }
             catch (ex: java.lang.Exception) {
-                Toast.makeText(context, ex.toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
             }
-        } else {
-            Toast.makeText(context, "Error while saving task", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -194,7 +193,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
             Toast.makeText(context, "Invalid priority. It should be a number", Toast.LENGTH_LONG).show()
         }
         catch(e: java.lang.Exception) {
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
         }
 
         if (task != null) {
@@ -203,11 +202,8 @@ class TaskDetailsAddUpdateFragment : Fragment() {
                 taskViewModel.update(task)
             }
             catch (ex: java.lang.Exception) {
-                Toast.makeText(context, ex.toString(), Toast.LENGTH_LONG).show()
+                Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
             }
-        }
-        else {
-            Toast.makeText(context, "Error while updating task", Toast.LENGTH_LONG).show()
         }
     }
 }

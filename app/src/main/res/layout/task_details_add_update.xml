@@ -20,7 +20,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="LabelFor,MissingConstraints"
+        android:autofillHints="Insert task title" />
 
     <EditText
         android:id="@+id/editTextUsers"
@@ -36,7 +37,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/editTextPriority"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="LabelFor,MissingConstraints"
+        android:autofillHints="Insert users for current task"/>
 
     <EditText
         android:id="@+id/editTextDeadline"
@@ -51,7 +53,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/editTextTitle"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="LabelFor,MissingConstraints"
+        android:autofillHints="Format for deadline: 21.11.2021"
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/editTextCreated"
@@ -66,7 +70,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/editTextDeadline"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="LabelFor,MissingConstraints"
+        android:autofillHints="Format for created date: 10.11.2021"
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/editTextPriority"
@@ -82,14 +88,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/editTextCreated"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="LabelFor,MissingConstraints"
+        android:autofillHints="Insert a number for priority"/>
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#F9F0F7"
-        android:text="Save"
+        android:text="@string/saveButtonText"
         android:textColor="#9F007C"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +111,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="140dp"
         android:layout_marginEnd="10dp"
-        android:text="Title"
+        android:text="@string/textViewTitleText"
         android:textAlignment="center"
         android:textColor="#9F007C"
         app:layout_constraintEnd_toStartOf="@+id/editTextTitle"
@@ -119,7 +126,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="44dp"
         android:layout_marginEnd="10dp"
-        android:text="Deadline"
+        android:text="@string/textViewDeadlineText"
         android:textAlignment="center"
         android:textColor="#9F007C"
         app:layout_constraintEnd_toStartOf="@+id/editTextDeadline"
@@ -134,7 +141,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="116dp"
         android:layout_marginEnd="10dp"
-        android:text="Created"
+        android:text="@string/textViewCreatedText"
         android:textAlignment="center"
         android:textColor="#9F007C"
         app:layout_constraintEnd_toStartOf="@+id/editTextDeadline"
@@ -149,7 +156,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="188dp"
         android:layout_marginEnd="10dp"
-        android:text="Priority"
+        android:text="@string/textViewPriorityText"
         android:textAlignment="center"
         android:textColor="#9F007C"
         app:layout_constraintEnd_toStartOf="@+id/editTextDeadline"
@@ -164,7 +171,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="248dp"
         android:layout_marginEnd="10dp"
-        android:text="Users"
+        android:text="@string/textViewUsersText"
         android:textAlignment="center"
         android:textColor="#9F007C"
         app:layout_constraintEnd_toStartOf="@+id/editTextDeadline"

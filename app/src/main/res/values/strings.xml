@@ -12,4 +12,11 @@
     <string name="deadline">Deadline</string>
     <string name="created">Created</string>
     <string name="pr">Pr</string>
+    <string name="saveButtonText">Save</string>
+    <string name="textViewTitleText">Title</string>
+    <string name="textViewCreatedText">Created</string>
+    <string name="textViewDeadlineText">Deadline</string>
+    <string name="textViewPriorityText">Priority</string>
+    <string name="textViewUsersText">Users</string>
+    <string name="deleteButtonText">Delete</string>
 </resources>
