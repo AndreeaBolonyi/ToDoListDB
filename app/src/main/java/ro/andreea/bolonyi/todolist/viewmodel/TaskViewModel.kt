@@ -15,7 +15,12 @@ import java.lang.Exception
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
     var mutableSaved = MutableLiveData<Boolean>().apply { value = false }
     var mutableError = MutableLiveData<String>().apply { value = "" }
-    var allTasks: LiveData<MutableList<Task>> = Utils.tasksRepository.getAllTasksForCurrentUser()
+    lateinit var allTasks: LiveData<MutableList<Task>>
+
+    fun initTasks() {
+        Utils.setTasksRepository(getApplication<Application>(), viewModelScope)
+        allTasks = Utils.tasksRepository.getAllTasksForCurrentUser()
+    }
 
     fun add(task: Task) = viewModelScope.launch(Dispatchers.IO) {
         Log.d("taskViewModel", "add $task")
@@ -24,8 +29,8 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             isAdded = Utils.tasksRepository.add(task)
         }
         catch(ex: Exception) {
-            Log.d("taskViewModel", "add error $ex")
-            mutableError.postValue(ex.toString())
+            Log.d("taskViewModel", "add error: ${ex.message}")
+            mutableError.postValue(ex.message)
         }
         mutableSaved.postValue(isAdded)
     }
@@ -37,14 +42,34 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             isUpdated = Utils.tasksRepository.update(task)
         }
         catch(ex: Exception) {
-            Log.d("taskViewModel", "update error $ex")
-            mutableError.postValue(ex.toString())
+            Log.d("taskViewModel", "update error: ${ex.message}")
+            mutableError.postValue(ex.message)
         }
         mutableSaved.postValue(isUpdated)
     }
 
     fun delete(taskId: Int) = viewModelScope.launch(Dispatchers.IO) {
         Log.d("taskViewModel", "delete task $taskId")
-        mutableSaved.postValue(Utils.tasksRepository.delete(taskId))
+        var isDeleted = false
+        try {
+            isDeleted = Utils.tasksRepository.delete(taskId)
+        }
+        catch(ex: Exception) {
+            Log.d("taskViewModel", "delete error: ${ex.message}")
+            mutableError.postValue(ex.message)
+        }
+        mutableSaved.postValue(isDeleted)
+    }
+
+    fun setUsersToSelectedTask(taskId: Int?) = viewModelScope.launch(Dispatchers.IO) {
+        Log.d("taskViewModel", "set users to selected task with id $taskId")
+        try {
+            Utils.tasksRepository.setUsersToTask(taskId)
+        }
+        catch(ex: Exception) {
+            Log.d("taskViewModel", "set users to selected task error: ${ex.message}")
+            mutableError.postValue(ex.message)
+        }
+        mutableSaved.postValue(true)
     }
 }

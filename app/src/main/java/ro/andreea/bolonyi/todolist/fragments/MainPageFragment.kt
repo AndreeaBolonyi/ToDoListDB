@@ -28,11 +28,11 @@ class MainPageFragment : Fragment() {
         val view = inflater.inflate(R.layout.main_page, container, false)
         adapter = RecyclerViewAdapter()
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+        taskViewModel.initTasks()
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.tasksList)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this.context)
-
 
         Log.d("initial tasks state", "${taskViewModel.allTasks.value?.size}")
         taskViewModel.allTasks.observe(viewLifecycleOwner, { tasks ->
@@ -47,26 +47,47 @@ class MainPageFragment : Fragment() {
 
         view.findViewById<Button>(R.id.deleteButton).setOnClickListener {
             val selectedTask: Task? = Utils.selectedTask
-
             if (selectedTask == null) {
                 Toast.makeText(this.context, "Please select a task", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
-            findNavController().navigate(R.id.taskDetailsDeleteFragment)
-            adapter.currentItem = null
+            if (selectedTask.users.isEmpty()) {
+                taskViewModel.setUsersToSelectedTask(selectedTask.taskId)
+
+                taskViewModel.mutableSaved.observe(viewLifecycleOwner, {areUsersSetToSelectedTask ->
+                    if (areUsersSetToSelectedTask) {
+                        findNavController().navigate(R.id.taskDetailsDeleteFragment)
+                        adapter.currentItem = null
+                    }
+                })
+            }
+            else {
+                findNavController().navigate(R.id.taskDetailsDeleteFragment)
+                adapter.currentItem = null
+            }
         }
 
         view.findViewById<Button>(R.id.updateButton).setOnClickListener {
             val selectedTask: Task? = Utils.selectedTask
-
             if (selectedTask == null) {
                 Toast.makeText(this.context, "Please select a task", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
-            findNavController().navigate(R.id.taskDetailsFragment)
-            adapter.currentItem = null
+            if (selectedTask.users.isEmpty()) {
+                taskViewModel.setUsersToSelectedTask(selectedTask.taskId)
+
+                taskViewModel.mutableSaved.observe(viewLifecycleOwner, { areUsersSetToSelectedTask ->
+                        if (areUsersSetToSelectedTask) {
+                            findNavController().navigate(R.id.taskDetailsFragment)
+                            adapter.currentItem = null
+                        }
+                })
+            } else {
+                findNavController().navigate(R.id.taskDetailsFragment)
+                adapter.currentItem = null
+            }
         }
 
         return view
