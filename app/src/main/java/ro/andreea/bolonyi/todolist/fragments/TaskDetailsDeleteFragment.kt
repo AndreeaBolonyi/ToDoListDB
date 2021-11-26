@@ -55,7 +55,7 @@ class TaskDetailsDeleteFragment : Fragment() {
             builder.setMessage("Are you sure you want to Delete?")
                 .setCancelable(false)
                 .setPositiveButton("Yes") { _, _ ->
-                    taskViewModel.delete(Utils.selectedTask!!.id)
+                    Utils.selectedTask!!.taskId?.let { it1 -> taskViewModel.delete(it1) }
                     Log.d("tasksDeleteFragment", "deleted ${Utils.selectedTask.toString()}")
                 }
                 .setNegativeButton("No") { dialog, _ ->

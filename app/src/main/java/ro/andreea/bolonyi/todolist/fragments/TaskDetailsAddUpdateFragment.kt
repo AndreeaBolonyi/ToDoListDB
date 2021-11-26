@@ -13,7 +13,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ro.andreea.bolonyi.todolist.R
 import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.MyDate
@@ -120,11 +123,13 @@ class TaskDetailsAddUpdateFragment : Fragment() {
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
 
         view.findViewById<Button>(R.id.saveButton).setOnClickListener {
-            if (Utils.selectedTask == null) {
-                addTask(view)
-            }
-            else {
-                updateTask(view)
+            lifecycleScope.launch(Dispatchers.IO) {
+                if (Utils.selectedTask == null) {
+                    addTask(view)
+                }
+                else {
+                    updateTask(view)
+                }
             }
         }
 
@@ -157,11 +162,13 @@ class TaskDetailsAddUpdateFragment : Fragment() {
                 priority = Integer.parseInt(view.findViewById<EditText>(R.id.editTextPriority).text.toString()),
                 users = getUsersFromEditText(view.findViewById<EditText>(R.id.editTextUsers).text.toString())
             )
-        } catch (e: NumberFormatException) {
+        } catch (ex: NumberFormatException) {
+            Log.d("addUpdateFragment", "${ex.message}")
             Toast.makeText(context, "Invalid priority. It should be a number", Toast.LENGTH_LONG)
                 .show()
-        } catch (e: java.lang.Exception) {
-            Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+        } catch (ex: java.lang.Exception) {
+            Log.d("addUpdateFragment", "${ex.message}")
+            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
         }
 
         if (task != null) {
@@ -170,6 +177,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
                 taskViewModel.add(task)
             }
             catch (ex: java.lang.Exception) {
+                Log.d("addUpdateFragment", "${ex.message}")
                 Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
             }
         }
@@ -185,15 +193,17 @@ class TaskDetailsAddUpdateFragment : Fragment() {
                     created = parseDateFromString(view.findViewById<EditText>(R.id.editTextCreated).text.toString()),
                     priority = Integer.parseInt(view.findViewById<EditText>(R.id.editTextPriority).text.toString()),
                     users = getUsersFromEditText(view.findViewById<EditText>(R.id.editTextUsers).text.toString()),
-                    id = it.id
+                    taskId = it.taskId
                 )
             }
 
-        } catch (e: NumberFormatException) {
+        } catch (ex: NumberFormatException) {
+            Log.d("addUpdateFragment", "${ex.message}")
             Toast.makeText(context, "Invalid priority. It should be a number", Toast.LENGTH_LONG).show()
         }
-        catch(e: java.lang.Exception) {
-            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        catch(ex: java.lang.Exception) {
+            Log.d("addUpdateFragment", "${ex.message}")
+            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
         }
 
         if (task != null) {
@@ -202,6 +212,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
                 taskViewModel.update(task)
             }
             catch (ex: java.lang.Exception) {
+                Log.d("addUpdateFragment", "${ex.message}")
                 Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
             }
         }
