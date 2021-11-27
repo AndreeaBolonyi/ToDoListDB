@@ -1,7 +1,6 @@
 package ro.andreea.bolonyi.todolist.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +33,6 @@ class MainPageFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
-        Log.d("initial tasks state", "${taskViewModel.allTasks.value?.size}")
         taskViewModel.allTasks.observe(viewLifecycleOwner, { tasks ->
             tasks?.let { adapter.setTasks(tasks) }
         })

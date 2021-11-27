@@ -15,6 +15,8 @@ import java.lang.Exception
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
     var mutableSaved = MutableLiveData<Boolean>().apply { value = false }
     var mutableError = MutableLiveData<String>().apply { value = "" }
+    val lastInsertedTaskId = MutableLiveData<Int>().apply { value = -1 }
+    private var lastInsertedTask: Task? = null
     lateinit var allTasks: LiveData<MutableList<Task>>
 
     fun initTasks() {
@@ -26,7 +28,11 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         Log.d("taskViewModel", "add $task")
         var isAdded = false
         try {
-            isAdded = Utils.tasksRepository.add(task)
+            lastInsertedTaskId.postValue(Utils.tasksRepository.add(task).toInt())
+            lastInsertedTask = task
+            if (lastInsertedTaskId.value != null) {
+                isAdded = true
+            }
         }
         catch(ex: Exception) {
             Log.d("taskViewModel", "add error: ${ex.message}")
@@ -71,5 +77,17 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             mutableError.postValue(ex.message)
         }
         mutableSaved.postValue(true)
+    }
+
+    fun insertIntoUsersTasks() = viewModelScope.launch(Dispatchers.IO) {
+        Log.d("taskViewModel", "add into userstasks table")
+        try {
+            Log.d("taskViewModel", "last inserted task id $lastInsertedTask")
+            lastInsertedTask?.let { Utils.tasksRepository.insertIntoUsersTasks(it) }
+        }
+        catch(ex: Exception) {
+            Log.d("taskViewModel", "set users to selected task error: ${ex.message}")
+            mutableError.postValue(ex.message)
+        }
     }
 }

@@ -7,11 +7,10 @@ import ro.andreea.bolonyi.todolist.domain.Task
 @Dao
 interface ITasksRepository {
 
-    @Transaction
     @Query("select * from tasks inner join userstasks on userId= :currentUserId where userstasks.taskId= tasks.taskId")
     fun getAllTasksForCurrentUser(currentUserId: Int?): LiveData<MutableList<Task>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun add(task: Task): Long
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
@@ -19,4 +18,7 @@ interface ITasksRepository {
 
     @Query("delete from tasks where taskId= :taskId")
     fun delete(taskId: Int)
+
+    @Query("select max(taskId) from tasks")
+    fun getLastId(): Int
 }
