@@ -2,7 +2,6 @@ package ro.andreea.bolonyi.todolist.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.room.Transaction
 import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.Task
 import ro.andreea.bolonyi.todolist.domain.User
@@ -14,7 +13,7 @@ class TasksRepositoryImpl(private val tasksRepoDB: ITasksRepository, private val
         return tasksRepoDB.getAllTasksForCurrentUser(Utils.currentUser?.userId)
     }
 
-    fun add(task: Task): Boolean {
+    fun add(task: Task): Long {
         Log.d("tasksRepo", "add task $task")
         val errors = validateTask(task)
         if(errors != "") {
@@ -22,14 +21,10 @@ class TasksRepositoryImpl(private val tasksRepoDB: ITasksRepository, private val
             throw Exception(errors)
         }
 
-        val generatedId: Long = tasksRepoDB.add(task)
-        for(user: User in task.users)
-            userstasksRepoDB.add(user.userId, generatedId.toInt())
-
-        Log.d("tasksRepo", "id for the inserted task is $generatedId")
-        if (generatedId > 0)
-            return true
-        return false
+        val taskId: Int = tasksRepoDB.getLastId() + 1
+        task.taskId = taskId
+        Log.d("tasksRepo", "add task $task")
+        return tasksRepoDB.add(task)
     }
 
     fun update(task: Task): Boolean {
@@ -66,6 +61,11 @@ class TasksRepositoryImpl(private val tasksRepoDB: ITasksRepository, private val
 
         Utils.selectedTask?.users = users
         Log.d("tasksRepo", "selected task has ${users.size} users")
+    }
+
+    fun insertIntoUsersTasks(task: Task) {
+        for(user: User in task.users)
+            userstasksRepoDB.add(user.userId, task.taskId)
     }
 
     private fun validateTask(task: Task): String {

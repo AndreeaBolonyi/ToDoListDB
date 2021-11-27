@@ -35,7 +35,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
         if (!text.contains(" ")) {
             val userFound: User? = Utils.usersRepository.findByGitHubUsername(text)
             if(userFound != null) {
-                List(1){userFound}
+                return List(1){userFound}
             }
             return emptyList()
         }
@@ -144,6 +144,13 @@ class TaskDetailsAddUpdateFragment : Fragment() {
             if(error != "") {
                 Toast.makeText(context, error, Toast.LENGTH_LONG).show()
                 findNavController().popBackStack()
+            }
+        })
+
+        taskViewModel.lastInsertedTaskId.observe(viewLifecycleOwner, {taskId ->
+            if(taskId != -1) {
+                Log.d("addUpdateFragment", "last inserted task id is $taskId")
+                taskViewModel.insertIntoUsersTasks()
             }
         })
 
