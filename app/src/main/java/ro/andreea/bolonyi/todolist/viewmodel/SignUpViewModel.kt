@@ -10,19 +10,18 @@ import kotlinx.coroutines.launch
 import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.User
 
-class LoginViewModel(application: Application) : AndroidViewModel(application) {
-    val mutableLoginResult = MutableLiveData<User>()
+class SignUpViewModel(application: Application) : AndroidViewModel(application) {
+    val mutableUserId = MutableLiveData<Int>()
+    lateinit var newUser: User
 
     init {
         if(Utils.shouldInitUsersRepository)
             Utils.setUsersRepository(application, viewModelScope)
     }
 
-    fun login(email: String, password: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val userFound: User? = Utils.usersRepository.findUserByEmailAndPassword(email, password)
-            Log.d("loginPage", "userFound: $userFound")
-            mutableLoginResult.postValue(userFound)
-        }
+    fun signup(name: String, gitHubUsername: String, email: String, password: String) = viewModelScope.launch(Dispatchers.IO) {
+        newUser = User(0, name, gitHubUsername, email, password)
+        Log.d("signUpPage", "new user: $newUser")
+        mutableUserId.postValue(Utils.usersRepository.add(newUser).toInt())
     }
 }

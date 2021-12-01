@@ -88,6 +88,11 @@ class MainPageFragment : Fragment() {
             }
         }
 
+        view.findViewById<Button>(R.id.logoutButton).setOnClickListener{
+            Utils.currentUser = null
+            findNavController().navigate(R.id.loginFragment)
+        }
+
         return view
     }
 }

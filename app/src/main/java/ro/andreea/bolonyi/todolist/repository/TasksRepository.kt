@@ -29,12 +29,12 @@ class TasksRepositoryImpl(private val tasksRepoDB: ITasksRepository, private val
 
     fun update(task: Task): Boolean {
         Log.d("tasksRepo", "update task $task")
-        Utils.selectedTask = null
         val errors = validateTask(task)
         if(errors != "") {
             Log.d("tasksRepo", errors)
             throw Exception(errors)
         }
+        Utils.selectedTask = null
 
         if (tasksRepoDB.update(task) > 0)
             return true

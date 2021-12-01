@@ -14,13 +14,17 @@
             android:id="@+id/action_loginActivity_to_mainPageActivity"
             app:destination="@id/mainPageFragment">
         </action>
+        <action
+            android:id="@+id/action_loginFragment_to_createAccountFragment"
+            app:destination="@id/createAccountFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/mainPageFragment"
         android:name="ro.andreea.bolonyi.todolist.fragments.MainPageFragment"
         android:label="MainPageActivity"
-        tools:layout="@layout/main_page">
+        tools:layout="@layout/main_page"
+        app:popUpTo="@id/loginFragment">
         <action
             android:id="@+id/action_mainPageFragment_to_taskDetailsFragment"
             app:destination="@id/taskDetailsFragment" />
@@ -38,4 +42,8 @@
         android:id="@+id/taskDetailsDeleteFragment"
         android:name="ro.andreea.bolonyi.todolist.fragments.TaskDetailsDeleteFragment"
         android:label="TaskDetailsDeleteFragment" />
+    <fragment
+        android:id="@+id/createAccountFragment"
+        android:name="ro.andreea.bolonyi.todolist.fragments.CreateAccountFragment"
+        android:label="CreateAccountFragment" />
 </navigation>

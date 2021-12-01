@@ -12,10 +12,12 @@ class Utils {
         lateinit var usersRepository: UsersRepositoryImpl
         lateinit var tasksRepository: TasksRepositoryImpl
         var selectedTask: Task? = null
+        var shouldInitUsersRepository = true
 
         fun setUsersRepository(application: Application, scope: CoroutineScope) {
             val usersRepoDB = MyRoomDatabase.getDatabase(application, scope).usersRepoDB()
             usersRepository = UsersRepositoryImpl(usersRepoDB)
+            shouldInitUsersRepository = false
         }
 
         fun setTasksRepository(application: Application, scope: CoroutineScope) {
