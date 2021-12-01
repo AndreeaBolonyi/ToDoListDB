@@ -113,6 +113,8 @@ class TaskDetailsAddUpdateFragment : Fragment() {
             val created = view.findViewById<EditText>(R.id.editTextCreated)
             created.setText(today.toString(), TextView.BufferType.EDITABLE)
             created.isEnabled = false
+
+            view.findViewById<EditText>(R.id.editTextUsers).setText(Utils.currentUser?.gitHubUsername)
         }
     }
 
@@ -143,7 +145,6 @@ class TaskDetailsAddUpdateFragment : Fragment() {
         taskViewModel.mutableError.observe(viewLifecycleOwner, {error ->
             if(error != "") {
                 Toast.makeText(context, error, Toast.LENGTH_LONG).show()
-                findNavController().popBackStack()
             }
         })
 

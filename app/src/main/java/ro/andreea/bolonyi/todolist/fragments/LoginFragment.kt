@@ -17,46 +17,53 @@ import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.viewmodel.LoginViewModel
 
 class LoginFragment : Fragment() {
-    private lateinit var viewModel: LoginViewModel
+    private lateinit var loginViewModel: LoginViewModel
 
-    private fun validateEmailAdress(email: String): Boolean {
+    private fun validateEmailAddress(email: String): Boolean {
         if (email == "")
             return false
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     private fun validatePassword(password: String): Boolean {
-        if (password.length < 5)
-            return false
-        return true
+        return password.length > 5
     }
 
-    @SuppressLint("FragmentLiveDataObserve")
+    @SuppressLint("FragmentLiveDataObserve", "SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.login_fragment, container, false)
-        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
         view.findViewById<Button>(R.id.loginButton).setOnClickListener {
-            val email = view.findViewById<EditText>(R.id.emailEditText).text.toString()
-            val password = view.findViewById<EditText>(R.id.passwordEditText).text.toString()
+            val email: String = view.findViewById<EditText>(R.id.emailEditText).text.toString()
+            val password: String = view.findViewById<EditText>(R.id.passwordEditText).text.toString()
             Log.d("loginPage", "login for $email $password")
 
-            if (!validateEmailAdress(email) || !validatePassword(password)) {
-                Toast.makeText(this.context, "Credentials are not valid", Toast.LENGTH_SHORT).show()
+            if (!validateEmailAddress(email)) {
+                Toast.makeText(context, "Email address is not valid", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
-            viewModel.login(email, password)
+            if(!validatePassword(password)) {
+                Toast.makeText(context, "Invalid format for password", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
 
-            viewModel.loginResult.observe(this, {
+            loginViewModel.login(email, password)
+
+            loginViewModel.mutableLoginResult.observe(this, {
                 Log.d("observer", "$it")
-                if (it.name != "") {
+                if (it != null) {
                     Utils.currentUser = it
                     findNavController().navigate(R.id.mainPageFragment)
                 } else {
-                    Toast.makeText(context, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Invalid credentials", Toast.LENGTH_LONG).show()
                 }
             })
+        }
+
+        view.findViewById<Button>(R.id.buttonSignUp).setOnClickListener{
+            findNavController().navigate(R.id.createAccountFragment)
         }
 
         return view

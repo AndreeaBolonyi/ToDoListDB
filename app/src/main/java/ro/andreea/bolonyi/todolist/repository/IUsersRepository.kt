@@ -2,6 +2,7 @@ package ro.andreea.bolonyi.todolist.repository
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ro.andreea.bolonyi.todolist.domain.User
 
@@ -17,6 +18,9 @@ interface IUsersRepository {
     @Query("select * from users where userId= :userId")
     fun getUserById(userId: Int?): User
 
-    @Insert
-    fun add(user: User)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun add(user: User): Long
+
+    @Query("select max(userId) from users")
+    fun getLastId(): Int
 }

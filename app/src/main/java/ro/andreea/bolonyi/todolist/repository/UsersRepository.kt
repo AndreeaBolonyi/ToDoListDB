@@ -22,4 +22,11 @@ class UsersRepositoryImpl(private val usersRepoDB: IUsersRepository) {
         Log.d("usersRepo", "user found by github username: $userFound")
         return userFound
     }
+
+    fun add(user: User): Long {
+        val userId: Int = usersRepoDB.getLastId() + 1
+        user.userId = userId
+        Log.d("usersRepo", "user to add: $user")
+        return usersRepoDB.add(user)
+    }
 }
