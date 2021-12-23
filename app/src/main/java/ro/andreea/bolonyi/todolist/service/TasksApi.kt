@@ -1,6 +1,7 @@
 package ro.andreea.bolonyi.todolist.service
 
-import androidx.lifecycle.LiveData
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -8,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import ro.andreea.bolonyi.todolist.domain.Task
+import java.time.LocalDate
 
 object TasksApi {
     private const val URL = "http://10.0.2.2:8080/to-do-list/tasks/"
@@ -34,15 +36,19 @@ object TasksApi {
         this.addInterceptor(interceptor)
     }.build()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private var gson = GsonBuilder()
+        .registerTypeAdapter(LocalDate::class.java, LocalDateTypeAdapter().nullSafe())
         .setLenient()
         .create()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private val retrofit = Retrofit.Builder()
         .baseUrl(URL)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .client(client)
         .build()
 
+    @RequiresApi(Build.VERSION_CODES.O)
     val service: TasksService = retrofit.create(TasksService::class.java)
 }

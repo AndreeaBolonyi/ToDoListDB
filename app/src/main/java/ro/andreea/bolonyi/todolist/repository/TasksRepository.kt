@@ -1,6 +1,8 @@
 package ro.andreea.bolonyi.todolist.repository
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.Task
@@ -16,6 +18,7 @@ class TasksRepositoryImpl(private val tasksRepoDB: ITasksRepository, private val
         return tasksRepoDB.getAllTasksForCurrentUser(Utils.currentUser?.userId)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun add(task: Task): Long {
         Log.d("tasksRepo", "add task $task")
         val errors = validateTask(task)
@@ -30,6 +33,7 @@ class TasksRepositoryImpl(private val tasksRepoDB: ITasksRepository, private val
         return tasksRepoDB.add(task)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun update(task: Task): Boolean {
         Log.d("tasksRepo", "update task $task")
         val errors = validateTask(task)
@@ -78,20 +82,21 @@ class TasksRepositoryImpl(private val tasksRepoDB: ITasksRepository, private val
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun validateTask(task: Task): String {
         var errors = ""
 
-        if (task.deadline?.year!! < task.created?.year!!) {
+        if (task.deadline?.year!!.compareTo(task.created?.year!!) > 0) {
             errors += "Deadline should be after created\n"
         }
 
-        if (task.deadline?.year!! == task.created?.year!! && task.deadline?.month!! < task.created?.month!!) {
+        if (task.deadline?.year!!.compareTo(task.created?.year!!) == 0 && task.deadline?.month!!.compareTo(task.created?.month!!) < 0) {
             errors += "Deadline should be after created\n"
         }
 
-        if (task.deadline?.year!! == task.created?.year!! &&
-                task.deadline?.month!! == task.created?.month!! &&
-                    task.deadline?.day!! < task.created?.day!!) {
+        if (task.deadline?.year!!.compareTo(task.created?.year!!) == 0 &&
+                task.deadline?.month!!.compareTo(task.created?.month!!) == 0 &&
+                    task.deadline?.dayOfMonth!!.compareTo(task.created?.dayOfMonth!!) < 0) {
             errors += "Deadline should be after created\n"
         }
 

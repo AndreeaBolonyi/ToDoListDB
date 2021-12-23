@@ -94,7 +94,8 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         Log.d("taskViewModel", "add into userstasks table")
         try {
             Log.d("taskViewModel", "last inserted task id $lastInsertedTask")
-            lastInsertedTask?.let { Utils.tasksRepository.insertIntoUsersTasks(it) }
+            if (lastInsertedTaskId.value != 0)
+                lastInsertedTask?.let { Utils.tasksRepository.insertIntoUsersTasks(it) }
         }
         catch(ex: Exception) {
             Log.d("taskViewModel", "set users to selected task error: ${ex.message}")

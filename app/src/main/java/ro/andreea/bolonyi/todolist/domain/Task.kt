@@ -1,6 +1,7 @@
 package ro.andreea.bolonyi.todolist.domain
 
 import androidx.room.*
+import java.time.LocalDate
 
 @Entity(tableName = "tasks")
 class Task {
@@ -12,10 +13,10 @@ class Task {
     var title: String?
 
     @ColumnInfo(name = "deadline")
-    var deadline: MyDate?
+    var deadline: LocalDate?
 
     @ColumnInfo(name = "created")
-    var created: MyDate?
+    var created: LocalDate?
 
     @ColumnInfo(name = "priority")
     var priority: Int?
@@ -23,7 +24,7 @@ class Task {
     @Ignore
     var users: List<User>
 
-    constructor(title: String?, deadline:MyDate?, created: MyDate?, priority: Int?, users: List<User>) {
+    constructor(title: String?, deadline:LocalDate?, created: LocalDate?, priority: Int?, users: List<User>) {
         this.title = title
         this.deadline = deadline
         this.created = created
@@ -31,7 +32,7 @@ class Task {
         this.users = users
     }
 
-    constructor(taskId: Int?, title: String?, deadline:MyDate?, created: MyDate?, priority: Int?) {
+    constructor(taskId: Int?, title: String?, deadline:LocalDate?, created: LocalDate?, priority: Int?) {
         this.taskId = taskId
         this.title = title
         this.deadline = deadline
@@ -40,7 +41,7 @@ class Task {
         this.users = mutableListOf()
     }
 
-    constructor(taskId: Int?, title: String?, deadline:MyDate?, created: MyDate?, priority: Int?, users: List<User>) {
+    constructor(taskId: Int?, title: String?, deadline:LocalDate?, created: LocalDate?, priority: Int?, users: List<User>) {
         this.taskId = taskId
         this.title = title
         this.deadline = deadline
