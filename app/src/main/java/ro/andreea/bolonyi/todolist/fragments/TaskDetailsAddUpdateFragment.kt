@@ -24,6 +24,7 @@ import ro.andreea.bolonyi.todolist.domain.Task
 import ro.andreea.bolonyi.todolist.domain.User
 import ro.andreea.bolonyi.todolist.service.UsersApi
 import ro.andreea.bolonyi.todolist.viewmodel.TaskViewModel
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class TaskDetailsAddUpdateFragment : Fragment() {
@@ -47,9 +48,11 @@ class TaskDetailsAddUpdateFragment : Fragment() {
 
         for(t in aux) {
             if(t != "") {
-                val userFound: User? = Utils.usersRepository.findByGitHubUsername(t)
+                //val userFound: User? = Utils.usersRepository.findByGitHubUsername(t)
+                val textWithoutSpaces = text.replace(" " , "")
+                val userFound: User = UsersApi.service.getUserByGitHubUsername(textWithoutSpaces)
 
-                if(userFound != null) {
+                if(userFound.userId != null) {
                     users.add(userFound)
                 }
                 else {
@@ -61,7 +64,13 @@ class TaskDetailsAddUpdateFragment : Fragment() {
         return users
     }
 
-    private fun parseDateFromString(text: String): MyDate {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun parseLocalDateToString(date: LocalDate?): String {
+        return "${date?.dayOfMonth}.${date?.monthValue}.${date?.year}"
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun parseDateFromString(text: String): LocalDate {
         Log.d("tasksFragment", "parseDate $text")
 
         if(!text.contains("."))
@@ -81,7 +90,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
                 if (month < 1 || month > 12)
                     throw java.lang.Exception("Invalid month")
 
-                return MyDate(day, month, year)
+                return LocalDate.of(year, month, day)
             }
         }
     }
@@ -104,8 +113,8 @@ class TaskDetailsAddUpdateFragment : Fragment() {
         if (selectedTask != null) {
             view.findViewById<EditText>(R.id.editTextUsers).setText(parseUsersToString(selectedTask.users), TextView.BufferType.EDITABLE)
             view.findViewById<EditText>(R.id.editTextTitle).setText(selectedTask.title, TextView.BufferType.EDITABLE)
-            view.findViewById<EditText>(R.id.editTextDeadline).setText(selectedTask.deadline.toString(), TextView.BufferType.EDITABLE)
-            view.findViewById<EditText>(R.id.editTextCreated).setText(selectedTask.created.toString(), TextView.BufferType.EDITABLE)
+            view.findViewById<EditText>(R.id.editTextDeadline).setText(parseLocalDateToString(selectedTask.deadline), TextView.BufferType.EDITABLE)
+            view.findViewById<EditText>(R.id.editTextCreated).setText(parseLocalDateToString(selectedTask.created), TextView.BufferType.EDITABLE)
             view.findViewById<EditText>(R.id.editTextPriority).setText(selectedTask.priority.toString(), TextView.BufferType.EDITABLE)
         }
         else {
@@ -151,7 +160,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
         })
 
         taskViewModel.lastInsertedTaskId.observe(viewLifecycleOwner, {taskId ->
-            if(taskId != -1) {
+            if(taskId != 0) {
                 Log.d("addUpdateFragment", "last inserted task id is $taskId")
                 taskViewModel.insertIntoUsersTasks()
             }
@@ -162,6 +171,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
         return view
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun addTask(view: View) {
         var task: Task? = null
         try {
@@ -174,11 +184,14 @@ class TaskDetailsAddUpdateFragment : Fragment() {
             )
         } catch (ex: NumberFormatException) {
             Log.d("addUpdateFragment", "${ex.message}")
-            Toast.makeText(context, "Invalid priority. It should be a number", Toast.LENGTH_LONG)
-                .show()
+            lifecycleScope.launch(Dispatchers.Main) {
+                Toast.makeText(context, "Invalid priority. It should be a number", Toast.LENGTH_LONG).show()
+            }
         } catch (ex: java.lang.Exception) {
             Log.d("addUpdateFragment", "${ex.message}")
-            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
+            lifecycleScope.launch(Dispatchers.Main) {
+                Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
+            }
         }
 
         if (task != null) {
@@ -188,11 +201,14 @@ class TaskDetailsAddUpdateFragment : Fragment() {
             }
             catch (ex: java.lang.Exception) {
                 Log.d("addUpdateFragment", "${ex.message}")
-                Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
+                lifecycleScope.launch(Dispatchers.Main) {
+                    Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun updateTask(view: View) {
         var task: Task? = null
         try {
@@ -209,11 +225,15 @@ class TaskDetailsAddUpdateFragment : Fragment() {
 
         } catch (ex: NumberFormatException) {
             Log.d("addUpdateFragment", "${ex.message}")
-            Toast.makeText(context, "Invalid priority. It should be a number", Toast.LENGTH_LONG).show()
+            lifecycleScope.launch(Dispatchers.Main) {
+                Toast.makeText(context, "Invalid priority. It should be a number", Toast.LENGTH_LONG).show()
+            }
         }
         catch(ex: java.lang.Exception) {
             Log.d("addUpdateFragment", "${ex.message}")
-            Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch(Dispatchers.Main) {
+                Toast.makeText(context, ex.message, Toast.LENGTH_SHORT).show()
+            }
         }
 
         if (task != null) {
@@ -223,7 +243,9 @@ class TaskDetailsAddUpdateFragment : Fragment() {
             }
             catch (ex: java.lang.Exception) {
                 Log.d("addUpdateFragment", "${ex.message}")
-                Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
+                lifecycleScope.launch(Dispatchers.Main) {
+                    Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
+                }
             }
         }
     }

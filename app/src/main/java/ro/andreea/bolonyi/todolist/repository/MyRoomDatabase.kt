@@ -1,6 +1,8 @@
 package ro.andreea.bolonyi.todolist.repository
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -10,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ro.andreea.bolonyi.todolist.domain.*
+import java.time.LocalDate
 
 @Database(entities = [User::class, Task::class, UserTask::class], version = 2, exportSchema = false)
 @TypeConverters(MyConverter::class)
@@ -48,6 +51,7 @@ abstract class MyRoomDatabase : RoomDatabase() {
             }
         }
 
+        @RequiresApi(Build.VERSION_CODES.O)
         private fun populateDatabase(usersRepoDB: IUsersRepository, tasksRepoDB: ITasksRepository, userstasksRepoDB: IUsersTasksRepository) {
             val user1 = User(
                 userId = 1,
@@ -60,36 +64,36 @@ abstract class MyRoomDatabase : RoomDatabase() {
             val task1 = Task(
                 taskId = 1,
                 title = "MA lab",
-                deadline = MyDate(5, 10, 2021),
+                deadline = LocalDate.of(2021, 10, 5),
                 priority = 1,
-                created = MyDate(19, 10, 2021),
+                created = LocalDate.of(2021, 10, 19),
                 users = List(1){user1}
             )
 
             val task2 = Task(
                 taskId = 2,
                 title = "PPD lab",
-                deadline = MyDate(26, 10, 2021),
+                deadline = LocalDate.of(2021, 10, 26),
                 priority = 2,
-                created = MyDate(11, 10, 2021),
+                created = LocalDate.of(2021, 10, 11),
                 users = List(1){user1}
             )
 
             val task3 = Task(
                 taskId = 3,
                 title = "LFTC lab",
-                deadline = MyDate(18, 10, 2021),
+                deadline = LocalDate.of(2021, 10, 18),
                 priority = 1,
-                created = MyDate(11, 10, 2021),
+                created = LocalDate.of(2021, 10, 11),
                 users = List(1){user1}
             )
 
             val task4 = Task(
                 taskId = 4,
                 title = "Flavius to do item",
-                deadline = MyDate(18, 10, 2021),
+                deadline = LocalDate.of(2021, 10, 18),
                 priority = 1,
-                created = MyDate(11, 10, 2021),
+                created = LocalDate.of(2021, 10, 11),
                 users = List(1){user2}
             )
 

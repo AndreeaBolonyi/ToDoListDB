@@ -1,6 +1,7 @@
 package ro.andreea.bolonyi.todolist.fragments
 
 import android.app.AlertDialog
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -18,6 +20,7 @@ import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.Task
 import ro.andreea.bolonyi.todolist.domain.User
 import ro.andreea.bolonyi.todolist.viewmodel.TaskViewModel
+import java.time.LocalDate
 
 class TaskDetailsDeleteFragment : Fragment() {
 
@@ -34,17 +37,24 @@ class TaskDetailsDeleteFragment : Fragment() {
         return text
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setEdiTexts(view: View) {
         val selectedTask: Task? = Utils.selectedTask
         if (selectedTask != null) {
             view.findViewById<EditText>(R.id.editTextUsers).setText(parseUsersToString(selectedTask.users), TextView.BufferType.EDITABLE)
             view.findViewById<EditText>(R.id.editTextTitle).setText(selectedTask.title, TextView.BufferType.EDITABLE)
-            view.findViewById<EditText>(R.id.editTextDeadline).setText(selectedTask.deadline.toString(), TextView.BufferType.EDITABLE)
-            view.findViewById<EditText>(R.id.editTextCreated).setText(selectedTask.created.toString(), TextView.BufferType.EDITABLE)
+            view.findViewById<EditText>(R.id.editTextDeadline).setText(parseLocalDateToString(selectedTask.deadline), TextView.BufferType.EDITABLE)
+            view.findViewById<EditText>(R.id.editTextCreated).setText(parseLocalDateToString(selectedTask.created), TextView.BufferType.EDITABLE)
             view.findViewById<EditText>(R.id.editTextPriority).setText(selectedTask.priority.toString(), TextView.BufferType.EDITABLE)
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun parseLocalDateToString(date: LocalDate?): String {
+        return "${date?.dayOfMonth}.${date?.monthValue}.${date?.year}"
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view =  inflater.inflate(R.layout.task_details_for_delete, container, false)
 
