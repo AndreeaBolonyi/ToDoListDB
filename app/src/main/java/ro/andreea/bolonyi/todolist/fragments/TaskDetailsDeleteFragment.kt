@@ -82,6 +82,12 @@ class TaskDetailsDeleteFragment : Fragment() {
             }
         })
 
+        taskViewModel.mutableError.observe(viewLifecycleOwner, {error ->
+            if(error != "") {
+                Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+            }
+        })
+
         setEdiTexts(view)
 
         return view

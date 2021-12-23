@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import ro.andreea.bolonyi.todolist.R
 import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.MyDate
@@ -30,104 +31,6 @@ import java.time.LocalDateTime
 class TaskDetailsAddUpdateFragment : Fragment() {
 
     private lateinit var taskViewModel: TaskViewModel
-
-    private suspend fun getUsersFromEditText(text: String): List<User> {
-        Log.d("tasksFragment", "getUsers $text")
-
-        if (!text.contains(" ")) {
-            //val userFound: User? = Utils.usersRepository.findByGitHubUsername(text)
-            val userFound: User = UsersApi.service.getUserByGitHubUsername(text)
-            if(userFound.userId != null) {
-                return List(1){userFound}
-            }
-            return emptyList()
-        }
-
-        val users: MutableList<User> = mutableListOf()
-        val aux = text.split(" ")
-
-        for(t in aux) {
-            if(t != "") {
-                //val userFound: User? = Utils.usersRepository.findByGitHubUsername(t)
-                val textWithoutSpaces = text.replace(" " , "")
-                val userFound: User = UsersApi.service.getUserByGitHubUsername(textWithoutSpaces)
-
-                if(userFound.userId != null) {
-                    users.add(userFound)
-                }
-                else {
-                    throw Exception("Invalid GitHub username")
-                }
-            }
-        }
-
-        return users
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun parseLocalDateToString(date: LocalDate?): String {
-        return "${date?.dayOfMonth}.${date?.monthValue}.${date?.year}"
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun parseDateFromString(text: String): LocalDate {
-        Log.d("tasksFragment", "parseDate $text")
-
-        if(!text.contains("."))
-            throw java.lang.Exception("invalid format for date")
-        else {
-            val aux = text.split(".")
-            if (aux.size != 3)
-                throw java.lang.Exception("invalid format for date")
-            else {
-                val day = Integer.parseInt(aux[0])
-                val month = Integer.parseInt(aux[1])
-                val year = Integer.parseInt(aux[2])
-
-                if (day < 1 || day > 31)
-                    throw java.lang.Exception("Invalid day")
-
-                if (month < 1 || month > 12)
-                    throw java.lang.Exception("Invalid month")
-
-                return LocalDate.of(year, month, day)
-            }
-        }
-    }
-
-    private fun parseUsersToString(users: List<User>): String {
-        Log.d("tasksFragment", "parse users to string")
-        var text = ""
-
-        for(user in users) {
-            text += user.gitHubUsername
-            text += " "
-        }
-
-        return text
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun setEdiTexts(view: View) {
-        val selectedTask: Task? = Utils.selectedTask
-        if (selectedTask != null) {
-            view.findViewById<EditText>(R.id.editTextUsers).setText(parseUsersToString(selectedTask.users), TextView.BufferType.EDITABLE)
-            view.findViewById<EditText>(R.id.editTextTitle).setText(selectedTask.title, TextView.BufferType.EDITABLE)
-            view.findViewById<EditText>(R.id.editTextDeadline).setText(parseLocalDateToString(selectedTask.deadline), TextView.BufferType.EDITABLE)
-            view.findViewById<EditText>(R.id.editTextCreated).setText(parseLocalDateToString(selectedTask.created), TextView.BufferType.EDITABLE)
-            view.findViewById<EditText>(R.id.editTextPriority).setText(selectedTask.priority.toString(), TextView.BufferType.EDITABLE)
-        }
-        else {
-            val currentDateTime = LocalDateTime.now()
-            val today = MyDate(currentDateTime.dayOfMonth, currentDateTime.monthValue, currentDateTime.year)
-
-            val created = view.findViewById<EditText>(R.id.editTextCreated)
-            created.setText(today.toString(), TextView.BufferType.EDITABLE)
-            created.isEnabled = false
-
-            view.findViewById<EditText>(R.id.editTextUsers).setText(Utils.currentUser?.gitHubUsername)
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -247,6 +150,108 @@ class TaskDetailsAddUpdateFragment : Fragment() {
                     Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+    private suspend fun getUsersFromEditText(text: String): List<User> {
+        Log.d("tasksFragment", "getUsers $text")
+
+        if (!text.contains(" ")) {
+            //val userFound: User? = Utils.usersRepository.findByGitHubUsername(text)
+            val userFound: User = UsersApi.service.getUserByGitHubUsername(text)
+            if(userFound.userId != null) {
+                return List(1){userFound}
+            }
+            return emptyList()
+        }
+
+        val users: MutableList<User> = mutableListOf()
+        val aux = text.split(" ")
+
+        for(t in aux) {
+            if(t != "") {
+                //val userFound: User? = Utils.usersRepository.findByGitHubUsername(t)
+                val textWithoutSpaces = t.replace(" " , "")
+                val userFound: User
+
+                try {
+                    userFound = UsersApi.service.getUserByGitHubUsername(textWithoutSpaces)
+                    users.add(userFound)
+                } catch(ex: HttpException) {
+                    Log.d("loginViewModel", "request was not approved, error code is ${ex.code()}")
+                    if (ex.code() == 400)
+                        throw Exception("Please insert an existent github username")
+                    if(ex.code() == 500)
+                        throw Exception("Server has an error")
+                }
+            }
+        }
+
+        return users
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun parseLocalDateToString(date: LocalDate?): String {
+        return "${date?.dayOfMonth}.${date?.monthValue}.${date?.year}"
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun parseDateFromString(text: String): LocalDate {
+        Log.d("tasksFragment", "parseDate $text")
+
+        if(!text.contains("."))
+            throw java.lang.Exception("invalid format for date")
+        else {
+            val aux = text.split(".")
+            if (aux.size != 3)
+                throw java.lang.Exception("invalid format for date")
+            else {
+                val day = Integer.parseInt(aux[0])
+                val month = Integer.parseInt(aux[1])
+                val year = Integer.parseInt(aux[2])
+
+                if (day < 1 || day > 31)
+                    throw java.lang.Exception("Invalid day")
+
+                if (month < 1 || month > 12)
+                    throw java.lang.Exception("Invalid month")
+
+                return LocalDate.of(year, month, day)
+            }
+        }
+    }
+
+    private fun parseUsersToString(users: List<User>): String {
+        Log.d("tasksFragment", "parse users to string")
+        var text = ""
+
+        for(user in users) {
+            text += user.gitHubUsername
+            text += " "
+        }
+
+        return text
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setEdiTexts(view: View) {
+        val selectedTask: Task? = Utils.selectedTask
+        if (selectedTask != null) {
+            view.findViewById<EditText>(R.id.editTextUsers).setText(parseUsersToString(selectedTask.users), TextView.BufferType.EDITABLE)
+            view.findViewById<EditText>(R.id.editTextTitle).setText(selectedTask.title, TextView.BufferType.EDITABLE)
+            view.findViewById<EditText>(R.id.editTextDeadline).setText(parseLocalDateToString(selectedTask.deadline), TextView.BufferType.EDITABLE)
+            view.findViewById<EditText>(R.id.editTextCreated).setText(parseLocalDateToString(selectedTask.created), TextView.BufferType.EDITABLE)
+            view.findViewById<EditText>(R.id.editTextPriority).setText(selectedTask.priority.toString(), TextView.BufferType.EDITABLE)
+        }
+        else {
+            val currentDateTime = LocalDateTime.now()
+            val today = MyDate(currentDateTime.dayOfMonth, currentDateTime.monthValue, currentDateTime.year)
+
+            val created = view.findViewById<EditText>(R.id.editTextCreated)
+            created.setText(today.toString(), TextView.BufferType.EDITABLE)
+            created.isEnabled = false
+
+            view.findViewById<EditText>(R.id.editTextUsers).setText(Utils.currentUser?.gitHubUsername)
         }
     }
 }

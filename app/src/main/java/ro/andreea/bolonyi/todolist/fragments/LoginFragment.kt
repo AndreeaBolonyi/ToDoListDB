@@ -60,6 +60,12 @@ class LoginFragment : Fragment() {
                     Toast.makeText(context, "Invalid credentials", Toast.LENGTH_LONG).show()
                 }
             })
+
+            loginViewModel.mutableError.observe(this, {
+                if (loginViewModel.mutableError.value != "") {
+                    Toast.makeText(context, "${loginViewModel.mutableError.value}", Toast.LENGTH_LONG).show()
+                }
+            })
         }
 
         view.findViewById<Button>(R.id.buttonSignUp).setOnClickListener{
