@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.User
+import ro.andreea.bolonyi.todolist.service.UsersApi
 
 class SignUpViewModel(application: Application) : AndroidViewModel(application) {
     val mutableUserId = MutableLiveData<Int>()
@@ -22,6 +23,7 @@ class SignUpViewModel(application: Application) : AndroidViewModel(application) 
     fun signup(name: String, gitHubUsername: String, email: String, password: String) = viewModelScope.launch(Dispatchers.IO) {
         newUser = User(0, name, gitHubUsername, email, password)
         Log.d("signUpPage", "new user: $newUser")
-        mutableUserId.postValue(Utils.usersRepository.add(newUser).toInt())
+        //mutableUserId.postValue(Utils.usersRepository.add(newUser).toInt())
+        mutableUserId.postValue(UsersApi.service.addUser(newUser))
     }
 }

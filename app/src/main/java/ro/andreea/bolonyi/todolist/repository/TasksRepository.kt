@@ -5,6 +5,9 @@ import androidx.lifecycle.LiveData
 import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.Task
 import ro.andreea.bolonyi.todolist.domain.User
+import ro.andreea.bolonyi.todolist.domain.UserTask
+import ro.andreea.bolonyi.todolist.service.UsersApi
+import ro.andreea.bolonyi.todolist.service.UsersTasksApi
 import java.lang.Exception
 
 class TasksRepositoryImpl(private val tasksRepoDB: ITasksRepository, private val userstasksRepoDB: IUsersTasksRepository) {
@@ -50,12 +53,14 @@ class TasksRepositoryImpl(private val tasksRepoDB: ITasksRepository, private val
         return true
     }
 
-    fun setUsersToTask(taskId: Int?) {
-        val usersIds: List<Int> = userstasksRepoDB.getAllUsersIdForTaskId(taskId)
+    suspend fun setUsersToTask(taskId: Int?) {
+        //val usersIds: List<Int> = userstasksRepoDB.getAllUsersIdForTaskId(taskId)
+        val usersIds: List<Int> = taskId?.let { UsersTasksApi.service.getAllUsersIdForTaskId(it) }!!
         val users: MutableList<User> = mutableListOf()
 
         usersIds.forEach {
-            val user: User = Utils.usersRepository.getUserById(it)
+            //val user: User = Utils.usersRepository.getUserById(it)
+            val user: User = UsersApi.service.getUserById(it)
             users.add(user)
         }
 
@@ -63,9 +68,14 @@ class TasksRepositoryImpl(private val tasksRepoDB: ITasksRepository, private val
         Log.d("tasksRepo", "selected task has ${users.size} users")
     }
 
-    fun insertIntoUsersTasks(task: Task) {
-        for(user: User in task.users)
-            userstasksRepoDB.add(user.userId, task.taskId)
+    suspend fun insertIntoUsersTasks(task: Task) {
+        for(user: User in task.users) {
+            //userstasksRepoDB.add(user.userId, task.taskId)
+            if (user.userId != null && task.taskId != null) {
+                val userTask = UserTask(user.userId!!, task.taskId!!)
+                UsersTasksApi.service.add(userTask)
+            }
+        }
     }
 
     private fun validateTask(task: Task): String {
