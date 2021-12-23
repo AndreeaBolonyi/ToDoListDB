@@ -102,6 +102,12 @@ class CreateAccountFragment : Fragment() {
                     findNavController().navigate(R.id.mainPageFragment)
                 }
             })
+
+            signUpViewModel.mutableError.observe(this, {
+                if (signUpViewModel.mutableError.value != "") {
+                    Toast.makeText(context, "${signUpViewModel.mutableError.value}", Toast.LENGTH_LONG).show()
+                }
+            })
         }
 
         return view
