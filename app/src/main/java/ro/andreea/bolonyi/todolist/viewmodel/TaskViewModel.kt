@@ -10,25 +10,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.Task
+import ro.andreea.bolonyi.todolist.service.TasksApi
 import java.lang.Exception
 
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
     var mutableSaved = MutableLiveData<Boolean>().apply { value = false }
     var mutableError = MutableLiveData<String>().apply { value = "" }
     val lastInsertedTaskId = MutableLiveData<Int>().apply { value = -1 }
-    private var lastInsertedTask: Task? = null
-    lateinit var allTasks: LiveData<MutableList<Task>>
+    var mutableAllTasks = MutableLiveData<List<Task>>().apply { value = emptyList() }
 
-    fun initTasks() {
+    private var lastInsertedTask: Task? = null
+    val allTasks: LiveData<List<Task>> = mutableAllTasks
+
+    fun initTasks() = viewModelScope.launch(Dispatchers.IO) {
         Utils.setTasksRepository(getApplication<Application>(), viewModelScope)
-        allTasks = Utils.tasksRepository.getAllTasksForCurrentUser()
+        //allTasks = Utils.tasksRepository.getAllTasksForCurrentUser()
+        val tasks = TasksApi.service.getAllByUserId(Utils.currentUser?.userId!!)
+        tasks.forEach{
+            Log.d("taskViewMode", "$it")
+        }
+        mutableAllTasks.postValue(tasks)
     }
 
     fun add(task: Task) = viewModelScope.launch(Dispatchers.IO) {
         Log.d("taskViewModel", "add $task")
         var isAdded = false
         try {
-            lastInsertedTaskId.postValue(Utils.tasksRepository.add(task).toInt())
+            //lastInsertedTaskId.postValue(Utils.tasksRepository.add(task).toInt()
+            lastInsertedTaskId.postValue(TasksApi.service.addTask(task))
             lastInsertedTask = task
             if (lastInsertedTaskId.value != null) {
                 isAdded = true
@@ -45,7 +54,8 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         Log.d("taskViewModel", "update $task")
         var isUpdated = false
         try {
-            isUpdated = Utils.tasksRepository.update(task)
+            //isUpdated = Utils.tasksRepository.update(task)
+            isUpdated = TasksApi.service.updateTask(task)
         }
         catch(ex: Exception) {
             Log.d("taskViewModel", "update error: ${ex.message}")
@@ -58,7 +68,8 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         Log.d("taskViewModel", "delete task $taskId")
         var isDeleted = false
         try {
-            isDeleted = Utils.tasksRepository.delete(taskId)
+            //isDeleted = Utils.tasksRepository.delete(taskId)
+            isDeleted = TasksApi.service.deleteTask(taskId)
         }
         catch(ex: Exception) {
             Log.d("taskViewModel", "delete error: ${ex.message}")

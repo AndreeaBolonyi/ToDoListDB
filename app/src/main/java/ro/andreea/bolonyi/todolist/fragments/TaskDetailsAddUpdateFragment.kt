@@ -22,6 +22,7 @@ import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.MyDate
 import ro.andreea.bolonyi.todolist.domain.Task
 import ro.andreea.bolonyi.todolist.domain.User
+import ro.andreea.bolonyi.todolist.service.UsersApi
 import ro.andreea.bolonyi.todolist.viewmodel.TaskViewModel
 import java.time.LocalDateTime
 
@@ -29,12 +30,13 @@ class TaskDetailsAddUpdateFragment : Fragment() {
 
     private lateinit var taskViewModel: TaskViewModel
 
-    private fun getUsersFromEditText(text: String): List<User> {
+    private suspend fun getUsersFromEditText(text: String): List<User> {
         Log.d("tasksFragment", "getUsers $text")
 
         if (!text.contains(" ")) {
-            val userFound: User? = Utils.usersRepository.findByGitHubUsername(text)
-            if(userFound != null) {
+            //val userFound: User? = Utils.usersRepository.findByGitHubUsername(text)
+            val userFound: User = UsersApi.service.getUserByGitHubUsername(text)
+            if(userFound.userId != null) {
                 return List(1){userFound}
             }
             return emptyList()
@@ -160,7 +162,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
         return view
     }
 
-    private fun addTask(view: View) {
+    private suspend fun addTask(view: View) {
         var task: Task? = null
         try {
             task = Task(
@@ -191,7 +193,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
         }
     }
 
-    private fun updateTask(view: View) {
+    private suspend fun updateTask(view: View) {
         var task: Task? = null
         try {
             task = Utils.selectedTask?.let {
@@ -200,7 +202,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
                     deadline = parseDateFromString(view.findViewById<EditText>(R.id.editTextDeadline).text.toString()),
                     created = parseDateFromString(view.findViewById<EditText>(R.id.editTextCreated).text.toString()),
                     priority = Integer.parseInt(view.findViewById<EditText>(R.id.editTextPriority).text.toString()),
-                    users = getUsersFromEditText(view.findViewById<EditText>(R.id.editTextUsers).text.toString()),
+                    users =  getUsersFromEditText(view.findViewById<EditText>(R.id.editTextUsers).text.toString()),
                     taskId = it.taskId
                 )
             }
