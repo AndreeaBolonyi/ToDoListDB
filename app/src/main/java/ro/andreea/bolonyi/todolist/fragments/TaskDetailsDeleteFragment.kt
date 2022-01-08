@@ -65,6 +65,7 @@ class TaskDetailsDeleteFragment : Fragment() {
             builder.setMessage("Are you sure you want to Delete?")
                 .setCancelable(false)
                 .setPositiveButton("Yes") { _, _ ->
+                    Toast.makeText(context, "Please wait, server is processing your request", Toast.LENGTH_LONG).show()
                     Utils.selectedTask!!.taskId?.let { it1 -> taskViewModel.delete(it1) }
                     Log.d("tasksDeleteFragment", "deleted ${Utils.selectedTask.toString()}")
                 }

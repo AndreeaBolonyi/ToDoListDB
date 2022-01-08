@@ -11,6 +11,7 @@ import retrofit2.HttpException
 import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.User
 import ro.andreea.bolonyi.todolist.service.UsersApi
+import java.lang.Exception
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     val mutableLoginResult = MutableLiveData<User>()
@@ -26,7 +27,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             try {
                 //val userFound: User? = Utils.usersRepository.findUserByEmailAndPassword(email, password)
                 val userFound = UsersApi.service.getUserByEmailAndPassword(User(0, "", "", email, password))
-                Log.d("loginPage", "userFound: $userFound")
+                Log.d("loginViewModel", "userFound: $userFound")
                 mutableLoginResult.postValue(userFound)
             }
             catch(ex: HttpException) {
@@ -35,6 +36,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     mutableError.postValue("Please insert valid credentials")
                 if(ex.code() == 500)
                     mutableError.postValue("Server has an error")
+            }
+            catch (ex: Exception) {
+                mutableError.postValue("Server is not available")
             }
         }
     }

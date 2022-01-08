@@ -49,6 +49,7 @@ class LoginFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            Toast.makeText(context, "Please wait, server is processing your request", Toast.LENGTH_LONG).show()
             loginViewModel.login(email, password)
 
             loginViewModel.mutableLoginResult.observe(this, {

@@ -11,6 +11,7 @@ import retrofit2.HttpException
 import ro.andreea.bolonyi.todolist.Utils
 import ro.andreea.bolonyi.todolist.domain.User
 import ro.andreea.bolonyi.todolist.service.UsersApi
+import java.lang.Exception
 
 class SignUpViewModel(application: Application) : AndroidViewModel(application) {
     val mutableUserId = MutableLiveData<Int>()
@@ -35,6 +36,9 @@ class SignUpViewModel(application: Application) : AndroidViewModel(application) 
                 mutableError.postValue("Please insert valid information")
             if(ex.code() == 500)
                 mutableError.postValue("Server has an error")
+        }
+        catch (ex: Exception) {
+            mutableError.postValue("Server is not available")
         }
     }
 }

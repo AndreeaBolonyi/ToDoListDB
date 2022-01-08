@@ -71,6 +71,7 @@ dependencies {
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/logging-interceptor
     implementation group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '4.9.1'
 
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
 
     // Room components
     implementation "androidx.room:room-runtime:2.3.0"
