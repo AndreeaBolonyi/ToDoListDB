@@ -92,6 +92,7 @@ class CreateAccountFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            Toast.makeText(context, "Please wait, server is processing your request", Toast.LENGTH_LONG).show()
             signUpViewModel.signup(name, gitHubUsername, email, password)
 
             signUpViewModel.mutableUserId.observe(viewLifecycleOwner, {

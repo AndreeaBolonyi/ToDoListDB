@@ -39,6 +39,7 @@ class TaskDetailsAddUpdateFragment : Fragment() {
         taskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
 
         view.findViewById<Button>(R.id.saveButton).setOnClickListener {
+            Toast.makeText(context, "Please wait, server is processing your request", Toast.LENGTH_LONG).show()
             lifecycleScope.launch(Dispatchers.IO) {
                 if (Utils.selectedTask == null) {
                     addTask(view)
@@ -158,11 +159,18 @@ class TaskDetailsAddUpdateFragment : Fragment() {
 
         if (!text.contains(" ")) {
             //val userFound: User? = Utils.usersRepository.findByGitHubUsername(text)
-            val userFound: User = UsersApi.service.getUserByGitHubUsername(text)
-            if(userFound.userId != null) {
-                return List(1){userFound}
+            try {
+                val userFound: User = UsersApi.service.getUserByGitHubUsername(text)
+                return List(1) { userFound }
+            } catch(ex: HttpException) {
+                Log.d("loginViewModel", "request was not approved, error code is ${ex.code()}")
+                if (ex.code() == 400)
+                    throw Exception("Please insert an existent github username")
+                if(ex.code() == 500)
+                    throw Exception("Server has an error")
+            } catch (ex: java.lang.Exception) {
+                throw Exception("Server is not available")
             }
-            return emptyList()
         }
 
         val users: MutableList<User> = mutableListOf()

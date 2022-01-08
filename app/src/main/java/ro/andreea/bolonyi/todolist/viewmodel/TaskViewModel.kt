@@ -64,6 +64,9 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             if(ex.code() == 500)
                 mutableError.postValue("Server has an error")
         }
+        catch (ex: Exception) {
+            mutableError.postValue("Server is not available")
+        }
         mutableSaved.postValue(isAdded)
     }
 
@@ -92,6 +95,9 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             if(ex.code() == 500)
                 mutableError.postValue("Server has an error")
         }
+        catch (ex: Exception) {
+            mutableError.postValue("Server is not available")
+        }
         mutableSaved.postValue(isUpdated)
     }
 
@@ -112,6 +118,9 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
                 mutableError.postValue("Please insert valid information")
             if(ex.code() == 500)
                 mutableError.postValue("Server has an error")
+        }
+        catch (ex: Exception) {
+            mutableError.postValue("Server is not available")
         }
         mutableSaved.postValue(isDeleted)
     }
